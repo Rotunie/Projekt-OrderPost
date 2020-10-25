@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>OrderPost</title>
+  <link rel="stylesheet" href="src/css/app.css">
+  <script src="src/js/app.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>  
+           <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js"></script>  
+</head>
+<body>
+
+  <!-- MENU górne -->
+
+  <div class="menu">
+    <a class="center" href="index.html">Home</a>
+    <a>Zamów</a>
+    <a href="credits.html">Autorzy</a>
+  </div>
+  <!-- Tekst górny -->
+
+  <div class="q">
+    <p>Wpisz produkty, które trzeba zakupić!</p>    
+  </div>
+
+  <!-- Lista na produkty -->
+
+  <!--<div id="list" class="list">
+    <form>
+      Produkt:<input type="text">
+      Ilość:<input class="quantity" type="number"></br>
+      <button id="plus" onclick="AddLine()">+</button>
+    </form>
+  </div>-->
+  <!-- Dodawanie linii -->
+  <div class="container">
+   <form method="post" id="insert_form">
+    <div class="table-repsonsive">
+     <span id="error"></span>
+     <table class="table table-bordered" id="item_table">
+      <tr>
+       <th><button type="button" name="add" class="btn btn-success btn-sm add">+<span class="glyphicon glyphicon-plus"></span></button></th>
+      </tr>
+     </table>
+     <div align="center">
+         <!-- Przycisk na dole -->
+      <input type="submit" name="submit" class="btn btn-info" value="Wyslij" />
+     </div>
+    </div>
+   </form>
+  </div>
+
+  <script>
+    $(document).ready(function(){
+     
+     $(document).on('click', '.add', function(){
+      var html = '';
+      html += '<tr>';
+      html += '<td><input type="text" name="item_name[]" class="form-control item_name" placeholder="Produkt:"/></td>';
+      html += '<td><input type="text" name="item_quantity[]" class="form-control item_quantity" placeholder="Ilosc:"/></td>';
+      html += '<td><input type="text" name="item_unit[]" class="form-control item_unit" placeholder="Jednostki:"/></td>';
+      html += '<td><button type="button" value="xd" name="remove" class="btn btn-danger btn-sm remove">-<span class="glyphicon glyphicon-minus"></span></button></td></tr>';
+      $('#item_table').append(html);
+     });
+     
+     $(document).on('click', '.remove', function(){
+      $(this).closest('tr').remove();
+     });
+     
+     $('#insert_form').on('submit', function(event){
+      event.preventDefault();
+      var error = '';
+      $('.item_name').each(function(){
+       var count = 1;
+       if($(this).val() == '')
+       {
+        error += "<p>Wpisz nazwe produktu w "+count+" wierszu</p>";
+        return false;
+       }
+       count = count + 1;
+      });
+      
+      $('.item_quantity').each(function(){
+       var count = 1;
+       if($(this).val() == '')
+       {
+        error += "<p> Wpisz ilosc w "+count+" wierszu </p>";
+        return false;
+       }
+       count = count + 1;
+      });
+      
+      $('.item_unit').each(function(){
+       var count = 1;
+       if($(this).val() == '')
+       {
+        error += "<p>Wpisz jednostki w "+count+" wierszu</p>";
+        return false;
+       }
+       count = count + 1;
+      });
+      var form_data = $(this).serialize();
+      if(error == '')
+      {
+       $.ajax({
+        url:"insert.php",
+        method:"POST",
+        data:form_data,
+        success:function(data)
+        {
+         if(data == 'ok')
+         {
+          $('#item_table').find("tr:gt(0)").remove();
+          $('#error').html('<div class="alert alert-success">Item Details Saved</div>');
+         }
+        }
+       });
+      }
+      else
+      {
+       $('#error').html('<div class="alert alert-danger">'+error+'</div>');
+      }
+     });
+     
+    });
+    </script>
+
+
+  <!-- Footer -->
+
+  <div class="footer">
+    <a>Projekt OrderPost</a>
+  </div>
+
+</body>
